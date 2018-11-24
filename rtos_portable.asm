@@ -74,9 +74,7 @@ _osport_start:
 	POP ST1   ; restore EALLOW status
 
 	; generate interrupt #20 (USER1)
-	;TRAP #20
-
-	INTR RTOSINT
+	TRAP #20
 
 	LRETR
 ;-----------------------------------------------------------

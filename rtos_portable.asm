@@ -15,6 +15,7 @@
 ;-----------------------------------------------------------
 	.ref __stack
 	.ref _g_sch
+	.ref _CPUTIMER2
 
 	.sect ".text"
 ;-----------------------------------------------------------
@@ -61,8 +62,22 @@ _osport_contextsw_req:
 ; Start the operating system kernel
 ;-----------------------------------------------------------
 _osport_start:
+
+	PUSH ST1  ; save EALLOW status
+	PUSH DP
+	EALLOW    ; enable modification
+
+	MOVW DP, #_CPUTIMER2+4      ; load data page of CPUTIMER2 TCR
+	AND @_CPUTIMER2+4, #0xFFEF  ; clear bit 4 of CPUTIMER2 TCR
+
+	POP DP
+	POP ST1   ; restore EALLOW status
+
 	; generate interrupt #20 (USER1)
-	TRAP #20
+	;TRAP #20
+
+	INTR RTOSINT
+
 	LRETR
 ;-----------------------------------------------------------
 ; USER1 interrupt handler, prepare the CPU for multithreading
@@ -71,7 +86,7 @@ _ISR_USER1:
 	; interrupt disabled automatically here
 
 	; load the first thread's control block
-	MOVZ DP, #_g_sch        ; load data page of g_sch
+	MOVW DP, #_g_sch        ; load data page of g_sch
 	MOVL XAR0, @_g_sch      ; XAR0 <- &(g_sch.p_current->p_sp)
 	MOVL ACC, *+XAR0[0]     ; ACC <- g_sch.p_current->p_sp
 	MOV  SP, ACC            ; SP <- ACC
@@ -138,17 +153,20 @@ _ISR_RTOSINT:
 
 	; store a snapshot of the stack pointer into
 	; current thread's TCB block
-	MOVZ DP, #_g_sch        ; load data page of g_sch
+	MOVW DP, #_g_sch        ; load data page of g_sch
 	MOVL XAR0, @_g_sch      ; XAR0 <- &(g_sch.p_current->p_sp)
 	MOVZ AR1, SP            ; XAR1 <- SP
 	MOVL *+XAR0[0], XAR1    ; g_sch.p_current->p_sp = XAR1
 
 
 	; load the next thread's control block
-	MOVZ DP, #_g_sch+2      ; load data page of g_sch+2
+	MOVW DP, #_g_sch+2      ; load data page of g_sch+2
 	MOVL XAR0, @_g_sch+2    ; XAR0 <- &(g_sch.p_next->p_sp)
 	MOVL ACC, *+XAR0[0]     ; ACC <- g_sch.p_next->p_sp
 	MOV  SP, ACC            ; SP <- ACC
+
+	MOVW DP, #_g_sch        ; load data page of g_sch
+	MOVL @_g_sch, XAR0      ; g_sch->p_current = XAR0
 
 	; pop the registers not automatically
 	; popped by hardware on interrupt return

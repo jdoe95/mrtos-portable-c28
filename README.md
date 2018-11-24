@@ -20,8 +20,6 @@ The portable code uses the following interrupts
  
 ## Code Example
 
-main()
-
 ```C
 
 // defined in rtos portable code
@@ -46,11 +44,11 @@ extern int esysmem_size;
 
 int main(void)
 {
-	// initialize hardware, configure CPUTIM2 (do not enable it)
+    // initialize hardware, configure CPUTIM2 (do not enable it)
 	
-	// ...
+    // ...
 	
-	// Fill PIE vector table
+    // Fill PIE vector table
     PIE_VECT_TABLE.RTOSINT = ISR_RTOSINT;
     PIE_VECT_TABLE.TINT2 = ISR_CPUTIM2;
     PIE_VECT_TABLE.USER1 = ISR_USER1;
@@ -64,7 +62,8 @@ int main(void)
 
 	// suppress warning #70: "integer conversion results in truncation"
 	// because we know that the size of the heap will be smaller than 
-	// the value of OSPORT_UINT_T
+	// the maximum value of OSPORT_UINT_T. If you want to use a longer
+	// OSPORT_UINT_T, that's fine.
 	// WARNING: esysmem_size must be a multiple of OSPORT_MEM_ALIGN
 #pragma diag_push
 #pragma diag_suppress 70
@@ -75,6 +74,7 @@ int main(void)
     
     // create some operating system objects here: threads, semaphores, etc.
     
+    // ... 
     
     // start the operating system, run the first highest priority thread
     os_start();

@@ -12,6 +12,13 @@ The portable code uses the following interrupts
  set before ``os_start()``, and __the timer must be disabled__. When the operating
  system starts, it will enable the timer automatically.
  
+Do not use ``EINT`` and ``DINT`` instructions in the application. Use the nested
+version provided by the operating system instead (``os_enter_critical()`` and 
+``os_exit_critical()``). Be sure to replace the macros in TI's peripheral library,  
+too, if it's being used. Manipulating interrupts directly in the application can
+really mess up the operating system's shared variable access locks.
+
+ 
 ## Features
 
  * FPU support

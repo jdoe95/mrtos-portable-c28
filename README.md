@@ -25,6 +25,20 @@ really mess up the operating system's shared variable access locks.
  * Low power mode (when idle)
  * Thread starts with interrupts enabled and EALLOW disabled
  
+## Settings
+
+|Setting|Value|
+|---|---|
+|CPUTIM2 interrupt frequency| 100Hz (recommended)|
+|RTOSINT interrupt priority| lowest* (recommended) |
+|CPUTIM2 interrupt priority| highest* (recommended) |
+|USER1 interrupt priority| highest* (recommended)|
+
+*: The interrupt priorities on the C28x core are hard-coded onto the silicon,
+but the manual provides several ways to implement priorities in software.
+The setting is recommended but not required. It is good enough to use
+the hardware priorities but the interrupt latency might be slightly longer.
+ 
 ## Code Example
 
 ```C

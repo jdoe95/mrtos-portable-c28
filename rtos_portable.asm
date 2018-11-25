@@ -55,7 +55,8 @@ _osport_enable_int:
 ; the interrupt.
 ;-----------------------------------------------------------
 _osport_contextsw_req:
-	INTR RTOSINT
+	; set the interrupt flag of RTOSINT
+	OR IFR, #0x8000
 	LRETR
 
 ;-----------------------------------------------------------

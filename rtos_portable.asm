@@ -124,8 +124,6 @@ _ISR_USER1:
 _ISR_RTOSINT:
 	; interrupts disabled automatically here
 
-	ASP ; align stack pointer
-
 	; context save, CPU registers
 	PUSH RPC
 	PUSH AR1H:AR0H
@@ -190,8 +188,6 @@ _ISR_RTOSINT:
 	POP XAR2
 	POP AR1H:AR0H
 	POP RPC
-
-	NASP ; undo align stack pointer
 
 	IRET
 	; interrupts enabled automatically here

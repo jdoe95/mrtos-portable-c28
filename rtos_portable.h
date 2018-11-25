@@ -36,7 +36,7 @@
 #define OSPORT_UINTPTR_T    uintptr_t
 #define OSPORT_BOOL_T       bool
 
-#define OSPORT_IDLE_STACK_SIZE  (52)
+#define OSPORT_IDLE_STACK_SIZE  (55)
 #define OSPORT_NUM_PRIOS        (8) /* 0 to 6, 7 reserved for idle */
 #define OSPORT_MEM_ALIGN        (2)
 #define OSPORT_MEM_SMALLEST     (0)

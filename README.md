@@ -38,7 +38,16 @@ really mess up the operating system's shared variable access locks.
 but the manual provides several ways to implement priorities in software.
 The setting is recommended but not required. It is good enough to use
 the hardware priorities but the interrupt latency might be slightly longer.
+
+## Comments for this particular platform
+
+On modern microcontrollers, interrupt service routines uses a seperate stack.
+On C2000, however, interrupts will use the stack of whichever process is currently
+running. This increases the chances of a stack overflow. When allocating stack,
+care must be taken to make sure the stack is sufficient for not only the current
+thread context, but also for interrupts wherever current thread context is preempted.
  
+
 ## Code Example
 
 ```C

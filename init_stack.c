@@ -136,7 +136,7 @@ void (*p_start_from)(void), void (*p_return_to)(void) )
     stack_frame_t *p_stack_frame = (stack_frame_t*) p_stack;
 
     p_stack_frame->st0 = 0x0080;
-    p_stack_frame->st1 = 0x8A08;
+    p_stack_frame->st1 = 0x8A48; /* enable EALLOW in thread context */
 
     /*
      * PC will control where thread will resume
